@@ -10,38 +10,40 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 130, vertical: 80),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'SEASONS',
-              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 16),
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: SeasonCard(
-                      country: 'FRANCE',
-                      season: 'Winter',
-                      seasonIndex: 0,
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  Expanded(
-                    child: SeasonCard(
-                      country: 'CAMBODIA',
-                      season: 'Summer',
-                      seasonIndex: 1,
-                    ),
-                  ),
-                ],
+        padding: EdgeInsets.symmetric(horizontal: 260, vertical: 60),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(color: Colors.grey.shade400, width: 3),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  'SEASONS',
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-          ],
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: SeasonCard(country: 'FRANCE', seasonIndex: 0),
+                      ),
+                      SizedBox(width: 15),
+                      Expanded(
+                        child: SeasonCard(country: 'CAMBODIA', seasonIndex: 2),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -49,15 +51,9 @@ class MyApp extends StatelessWidget {
 }
 
 class SeasonCard extends StatefulWidget {
-  const SeasonCard({
-    super.key,
-    required this.country,
-    required this.season,
-    required this.seasonIndex,
-  });
+  SeasonCard({super.key, required this.country, required this.seasonIndex});
 
   final String country;
-  final String season;
   final int seasonIndex;
 
   @override
@@ -66,14 +62,7 @@ class SeasonCard extends StatefulWidget {
 
 class _SeasonCardState extends State<SeasonCard> {
   late int currentSeasonIndex;
-
-  final List<String> seasons = ['Winter', 'Summer', 'Autumn', 'Spring'];
-  final Map<String, Color> seasonColors = {
-    'Winter': const Color(0xFF87CEEB),
-    'Summer': const Color(0xFFFFFF00),
-    'Autumn': const Color(0xFFFF8C00),
-    'Spring': const Color(0xFF90EE90),
-  };
+  final List<String> seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
 
   @override
   void initState() {
@@ -82,8 +71,6 @@ class _SeasonCardState extends State<SeasonCard> {
   }
 
   String get currentSeason => seasons[currentSeasonIndex];
-
-  Color get backgroundColor => seasonColors[currentSeason] ?? Colors.grey;
 
   void nextSeason() {
     setState(() {
@@ -96,64 +83,49 @@ class _SeasonCardState extends State<SeasonCard> {
     return GestureDetector(
       onTap: nextSeason,
       child: Card(
-        elevation: 8,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: backgroundColor,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: backgroundColor,
-                  ),
-                  child: Center(child: SeasonIcon(season: currentSeason)),
-                ),
-              ),
-              Container(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          children: [
+            Expanded(
+              flex: 85,
+              child: Image.asset(
+                _getImagePath(currentSeason),
+                fit: BoxFit.fill,
                 width: double.infinity,
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  border: Border(top: BorderSide(color: Colors.grey[300]!)),
-                ),
+              ),
+            ),
+            Expanded(
+              flex: 15,
+              child: Center(
                 child: Text(
                   widget.country,
-                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
-}
 
-class SeasonIcon extends StatelessWidget {
-  const SeasonIcon({super.key, required this.season});
-
-  final String season;
-
-  @override
-  Widget build(BuildContext context) {
+  String _getImagePath(String season) {
     switch (season) {
       case 'Winter':
-        return Icon(Icons.ac_unit, size: 60, color: Colors.white);
-      case 'Summer':
-        return Icon(Icons.wb_sunny, size: 60, color: Colors.white);
-      case 'Autumn':
-        return Icon(Icons.nature, size: 60, color: Colors.white);
+        return 'assets/images/winter.png';
       case 'Spring':
-        return Icon(Icons.favorite, size: 60, color: Colors.white);
+        return 'assets/images/spring.png';
+      case 'Summer':
+        return 'assets/images/summer.png';
+      case 'Autumn':
+        return 'assets/images/autumn.png';
       default:
-        return SizedBox();
+        return 'assets/images/winter.png';
     }
   }
 }
